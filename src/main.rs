@@ -1,5 +1,8 @@
 mod day_01;
+mod day_02;
+mod day_03;
+mod day_04;
 
 fn main() {
-    let result = day_01::solve_p2();
+    day_04::solve_p1();
 }
