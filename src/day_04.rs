@@ -1,4 +1,4 @@
-static input:&str ="SXMSMMXMASMSSSSXAMXMXAMXXAAXMAMSAMMXMAMXSAMXMXMMMMSMMXMXMASMMSMMSSSMAXXMSMSSXMASMXSSSXSMMSSSSSXMASXSAMXSMMSSMXXXXXMASXMXMSSSMMSSMSSSMMMMSSXM
+static INPUT:&str ="SXMSMMXMASMSSSSXAMXMXAMXXAAXMAMSAMMXMAMXSAMXMXMMMMSMMXMXMASMMSMMSSSMAXXMSMSSXMASMXSSSXSMMSSSSSXMASXSAMXSMMSSMXXXXXMASXMXMSSSMMSSMSSSMMMMSSXM
 SAMAMSMSMSXAAMAAXMSXMSSSXSXMSMMSASASXSMSMSSMSSMXAAMXMASXSAAMAXASAXMASXSASMASMMSMMAMXSAAXAAXAAAASAMAXAXASAAAAMMSMMSMMMASASAMXSAAAAMASMAASMMAS
 SAMXSAAXAMMMMMMXAXSAMMAMAMXMAAXSXMASAAMSXAXAAAXSMSSSSXSAMXMMASMMMSXAMSAAXMAMMMAAMASAMXMMMSSMMMMMASMXMMXSMMSXMAAAAAAAXMASMASAMMSMMMAMMMXMAMAM
 SAMXSMSMAMAAXSXSSXSAMMAMAMASXSMSXXXMMMMSMMSMMXMSAAAMXXMXMXXMXXXASAMXMSMSMMXXAXXXMAXAMSXXAAMXSAASMMMSXAAXMAXMSMSMMSXMXMMMSXMXSXMMMMXSXSMSSMMS
@@ -140,8 +140,8 @@ MAMMXAXAXXSAMAAAAMXMASAMSAMXSSXAAAMMAMSASAMXAAAAXMAMXAASXSMXAMSSXMASAASAMSXMMAMX
 MMSASMSMSASXSSSMMAMSXSASMXMXSAMSSSXMXXSXMXSSSMMSSMXMAMASAAMMXMMSXMSSMMMSMXXMAXSAMXXSAMXXSSSSMMXMXSSMXMSMMMXMMAMXMXSMASMSMXMMASMMXMMSMSSMMSSX";
 
 pub fn solve_p1() -> () {
-    let matrix: Vec<Vec<char>> = input.lines().map(|line| line.chars().collect()).collect();
-    let lines: Vec<String> = input.lines().map(|l| l.to_string()).collect();
+    let matrix: Vec<Vec<char>> = INPUT.lines().map(|line| line.chars().collect()).collect();
+    let lines: Vec<String> = INPUT.lines().map(|l| l.to_string()).collect();
     let line_length = lines[0].len();
     let columns: Vec<String> = (0..line_length)
         .map(|col| matrix.iter().map(|line| line[col]).collect())
@@ -181,3 +181,34 @@ fn count_xmas(strings: Vec<String>) -> usize {
         .map(|s| s.matches("XMAS").count() + s.matches("SAMX").count())
         .sum()
 }
+
+pub fn solve_p2() -> () {
+    let matrix: Vec<Vec<char>> = INPUT.lines().map(|line| line.chars().collect()).collect();
+    let amount_of_lines = matrix.len();
+    let result: usize = (0..amount_of_lines - 2)
+        .map(|top_left_i| {
+            (0..amount_of_lines - 2)
+                .filter(|top_left_j| is_x_mas(top_left_i, *top_left_j, &matrix))
+                .count()
+        })
+        .sum();
+
+    println!("{result}");
+}
+
+fn is_x_mas(top_left_i: usize, top_left_j: usize, matrix: &Vec<Vec<char>>) -> bool {
+    let slice:Vec<Vec<char>> = matrix[top_left_i..=top_left_i + 2].to_vec().iter().map(|row| row[top_left_j..=top_left_j + 2].to_vec()).collect();
+    let diagonal1 =
+        first_diagonal(&slice);
+    let diagonal2 =
+        second_diagonal(&slice);
+    (diagonal1 == "MAS" || diagonal1 == "SAM") && (diagonal2 == "MAS" || diagonal2 == "SAM")
+}
+
+fn first_diagonal(mat:&Vec<Vec<char>>) -> String {
+    vec!(mat[0][0],mat[1][1],mat[2][2]).iter().collect()
+}
+fn second_diagonal(mat:&Vec<Vec<char>>) -> String {
+    vec!(mat[0][2],mat[1][1],mat[2][0]).iter().collect()
+}
+
